@@ -13,13 +13,13 @@ public:
     Vec3(double x_, double y_, double z_) : x(x_), y(y_), z(z_) {}
 
     // Vector addition
-    void add(Vec3 operand) {
-        x += operand.x; y += operand.y; z += operand.z;
+    Vec3 add(Vec3 operand) {
+        return Vec3(x += operand.x, y += operand.y, z += operand.z);
     }
 
     // vector subtraction
-    void subtract(Vec3 operand) {
-        x -= operand.x; y -= operand.y; z -= operand.z;
+    Vec3 subtract(Vec3 operand) {
+        return Vec3(x -= operand.x, y -= operand.y, z -= operand.z);
     }
 
     // scalar multiplication
@@ -47,6 +47,7 @@ public:
         return std::sqrt(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2));
     }
     
+    // unit vectors
     Vec3 unitVector() {
         double magnitude = length();
         return Vec3(x / magnitude, y / magnitude, z / magnitude);
