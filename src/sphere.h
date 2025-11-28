@@ -1,4 +1,7 @@
 #pragma once
+#include <cmath>
+#include "Vec3.h"
+#include "hitcount.h"
 // sphere class
 class Sphere {
 private:
@@ -11,7 +14,7 @@ public:
     // normal constructor
     Sphere(Vec3 center_, double radius_) : center(center_) : radius(radius_) {}
 
-    bool hit(const Ray newRay, ) {
+    bool hit(const Ray newRay, HitCount& record) {
         // checking if the passed in ray has hit the sphere and if so compute 
         // the nearest t such that we can then shade accordingly
 
@@ -31,6 +34,28 @@ public:
         // computing the quadratic formula
         double discriminent = (b * b) - (4 * a * c);
 
+        // can skip all of the calcuations by definition of determinant we know this means there is no hit
         if (discriminent < 0) return false;
+
+        // case where we have 2 hit points -- from the quadratic formula
+        double t_1 = ((-1 * b) - std::sqrt(discriminent)) / (2 * a);
+        double t_2 = ((-1 * b) + std::sqrt(discriminent)) / (2 * a);
+
+        record.t = 1e9;
+        if (t_1 < 0) {
+            record.t = t_2;
+        } else if (t_2 < 0) {
+            record.t = t_1;
+        } else {
+            record.t = std::min(t_1, t_2);
+        }
+
+
+        // now have to compute the intersection point in 3d space
+        record.point = newRay.pointingTo(record.t);
+        // just using the equation as normal
+        record.normal = record.point.subtract(center);
+        record.normal = record.normal.scalarDivision(radius);
+        return true;
     }
 }
